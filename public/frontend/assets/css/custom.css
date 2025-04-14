@@ -1,0 +1,46 @@
+/* not active */
+.nav-pills .nav-link:not(.active) {
+    color: black;
+    margin-right: 3px;
+    margin-left: 5px;
+    border: 3px solid #007089;
+    padding: 5px 5px 5px 5px;
+
+}
+
+/* active*/
+.nav-pills .nav-link {
+    color: black;
+    margin-top: 5px;
+}
+
+.nav-pills .nav-link.active,
+.nav-pills .show>.nav-link {
+    padding: 7px;
+    background-color: #007089;
+}
+
+/* All Course title */
+.all-coourse-title {
+    font-size: 20px;
+}
+
+/* All Tuition fees title*/
+.all-tuition-fees-title {
+    background: #C2DDE2;
+}
+
+/* All Course box */
+.all-course-box {
+    padding: 20px;
+}
+
+/* Apply now page header title */
+.header_title {
+    font-size: 40px;
+    color: black;
+    background: white;
+    border-radius: 40px;
+    display: inline;
+    padding: 10px;
+}
