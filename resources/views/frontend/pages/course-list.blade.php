@@ -198,75 +198,71 @@
 
 @push('scripts')
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
+            let searchTimer = null;
+            let courseAjaxRequest = null;
+            const debounceDelay = 2000; // 2000 = 2 seconds, 3000 = 3 seconds
 
-            $(document).on('click', '.pagination a', function(event) {
+            $(document).on('click', '.pagination a', function (event) {
                 event.preventDefault();
                 var page = $(this).attr('href').split('page=')[1];
-                // alert(page);
                 getMoreCourses(page);
             });
 
-            $('#search').on('keyup', function() {
-                $value = $(this).val();
+            $('#search').on('input', function () {
+                clearTimeout(searchTimer);
+
+                searchTimer = setTimeout(function () {
+                    getMoreCourses(1);
+                }, debounceDelay);
+            });
+
+            $('#country_id').on('change', function () {
                 getMoreCourses(1);
             });
 
-            $('#country_id').on('change', function() {
-                getMoreCourses();
+            $('#university_id').on('change', function () {
+                getMoreCourses(1);
             });
 
-            $('#university_id').on('change', function() {
-                getMoreCourses();
+            $('#campus_id').on('change', function () {
+                getMoreCourses(1);
             });
 
-
-            $('#campus_id').on('change', function() {
-                getMoreCourses();
+            $('#level_id').on('change', function () {
+                getMoreCourses(1);
             });
 
-            $('#level_id').on('change', function() {
-                getMoreCourses();
-            });
+            function getMoreCourses(page = 1) {
+                var search = $('#search').val();
 
-            // $('#budget_id').on('change', function() {
-            //     getMoreCourses();
-            // });
+                var selectedCountry = $("#country_id option:selected").val();
+                var selectedUniversity = $("#university_id option:selected").val();
+                var selectedCampus = $("#campus_id option:selected").val();
+                var selectedLevel = $("#level_id option:selected").val();
 
-        });
-
-        function getMoreCourses(page) {
-
-             //search based on course name
-             var search = $('#search').val();
-
-             // Filter By  Country
-             var selectedCountry = $("#country_id option:selected").val();
-            // Filter By  university
-            var selectedUniversity = $("#university_id option:selected").val();
-            // Filter By  location
-            var selectedCampus = $("#campus_id option:selected").val();
-            // Filter By  level
-            var selectedLevel = $("#level_id option:selected").val();
-            // Filter By  Budget
-            // var selectedBudget = $("#budget_id option:selected").val();
-
-            $.ajax({
-                type: "GET",
-                data: {
-                    'search_query': search,
-                    'country_id':selectedCountry,
-                    'university_id': selectedUniversity,
-                    'campus_id': selectedCampus,
-                    'level_id': selectedLevel,
-                   // 'budget_id': selectedBudget
-                },
-                url: "{{ route('course.get-more-courses') }}" + "?page=" + page,
-                success: function(data) {
-                    //   console.log(data);
-                    $('#course_data').html(data);
+                if (courseAjaxRequest) {
+                    courseAjaxRequest.abort();
                 }
-            });
-        }
+
+                courseAjaxRequest = $.ajax({
+                    type: "GET",
+                    data: {
+                        'search_query': search,
+                        'country_id': selectedCountry,
+                        'university_id': selectedUniversity,
+                        'campus_id': selectedCampus,
+                        'level_id': selectedLevel
+                    },
+                    url: "{{ route('course.get-more-courses') }}" + "?page=" + page,
+                    success: function (data) {
+                        $('#course_data').html(data);
+                    },
+                    complete: function () {
+                        courseAjaxRequest = null;
+                    }
+                });
+            }
+        });
     </script>
 @endpush
